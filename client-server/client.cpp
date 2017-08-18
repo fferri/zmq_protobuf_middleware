@@ -20,7 +20,7 @@ int main()
 
         // send SumRequest:
         std::cout << "sending a=" << req.a() << " b=" << req.b() << std::endl;
-        x_send<MyMiddleware::SumRequest>(socket, req);
+        x_send(socket, req);
 
         // receive SumResponse:
         MyMiddleware::SumResponse resp;
