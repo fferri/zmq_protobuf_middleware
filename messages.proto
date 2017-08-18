@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package MyMiddleware;
+
+message SumRequest {
+  required int32 a = 1;
+  required int32 b = 2;
+}
+
+message SumResponse {
+  required int32 s = 1;
+}
+
