@@ -5,6 +5,7 @@
 #include <iostream>
 #include "messages.pb.h"
 #include "zhelpers.hpp"
+#include "protobufhelpers.hpp"
 
 int main()
 {
@@ -16,8 +17,7 @@ int main()
     {
         // receive SumRequest:
         MyMiddleware::SumRequest req;
-        std::string req_str = s_recv(socket);
-        if(req.ParseFromString(req_str))
+        if(s_recv(socket, req))
             std::cout << "received a=" << req.a() << " b=" << req.b() << std::endl;
         else
             std::cout << "failed deserialization" << std::endl;
@@ -29,10 +29,8 @@ int main()
         resp.set_s(req.a() + req.b());
 
         // send SumResponse:
-        std::cout << "sending s=" << resp.s() << std::endl;
-        std::string resp_str;
-        if(resp.SerializeToString(&resp_str))
-            s_send(socket, resp_str);
+        if(s_send(socket, resp))
+            std::cout << "sent s=" << resp.s() << std::endl;
         else
             std::cout << "failed serialization" << std::endl;
     }

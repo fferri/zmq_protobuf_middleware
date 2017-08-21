@@ -3,6 +3,7 @@
 #include <iostream>
 #include "messages.pb.h"
 #include "zhelpers.hpp"
+#include "protobufhelpers.hpp"
 
 int main()
 {
@@ -17,17 +18,14 @@ int main()
         req.set_b(20 - 4 * n);
 
         // send SumRequest:
-        std::cout << "sending a=" << req.a() << " b=" << req.b() << std::endl;
-        std::string req_str;
-        if(req.SerializeToString(&req_str))
-            s_send(socket, req_str);
+        if(s_send(socket, req))
+            std::cout << "sent a=" << req.a() << " b=" << req.b() << std::endl;
         else
             std::cout << "failed serialization" << std::endl;
 
         // receive SumResponse:
         MyMiddleware::SumResponse resp;
-        std::string resp_str = s_recv(socket);
-        if(resp.ParseFromString(resp_str))
+        if(s_recv(socket, resp))
             std::cout << "received s=" << resp.s() << std::endl;
         else
             std::cout << "failed deserialization" << std::endl;
