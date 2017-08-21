@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package MyMiddleware;
+
+message Status {
+  required int32 state = 1;
+  required int32 micro_state = 2;
+}
+

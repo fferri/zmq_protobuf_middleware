@@ -4,7 +4,8 @@
 #include <zmq.hpp>
 #include <string>
 #include <iostream>
-#include "messages.pb.h"
+#include "Temperature.pb.h"
+#include "Status.pb.h"
 #include "zhelpers.hpp"
 #include "protobufhelpers.hpp"
 
@@ -17,23 +18,23 @@ int main()
     for(int n = 0; n < 3; n++) {
 
         // build SumRequest:
-        MyMiddleware::SumRequest req;
-        req.set_a(10);
-        req.set_b(100 + n);
+        MyMiddleware::Temperature temp;
+        temp.set_value(28.57);
 
         // send SumRequest:
-        if(s_publish(publisher, req))
-            std::cout << "send a=" << req.a() << " b=" << req.b() << std::endl;
+        if(s_publish(publisher, temp))
+            std::cout << "send temp=" << temp.value() << std::endl;
         else
             std::cout << "serialization failed" << std::endl;
 
         // build SumResponse:
-        MyMiddleware::SumResponse resp;
-        resp.set_s(1000);
+        MyMiddleware::Status status;
+        status.set_state(1);
+        status.set_micro_state(1);
 
         // send SumResponse:
-        if(s_publish(publisher, resp))
-            std::cout << "send s=" << resp.s() << std::endl;
+        if(s_publish(publisher, status))
+            std::cout << "send state=" << status.state() << " micro_state=" << status.micro_state() << std::endl;
         else
             std::cout << "serialization failed" << std::endl;
 

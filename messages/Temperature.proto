@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package MyMiddleware;
+
+message Temperature {
+  required double value = 1;
+}
+

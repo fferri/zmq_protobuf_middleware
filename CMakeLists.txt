@@ -25,21 +25,23 @@ set(LIBS
     ${Boost_SERIALIZATION_LIBRARY}
 )
 
+foreach(MSG Sum Temperature Status)
 add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/messages.pb.cc ${CMAKE_BINARY_DIR}/messages.pb.h
-    DEPENDS messages.proto
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMAND protoc -I=. --cpp_out=${CMAKE_BINARY_DIR} messages.proto
+    OUTPUT ${CMAKE_BINARY_DIR}/${MSG}.pb.cc ${CMAKE_BINARY_DIR}/${MSG}.pb.h
+    DEPENDS messages/${MSG}.proto
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/messages
+    COMMAND protoc -I=. --cpp_out=${CMAKE_BINARY_DIR} ${MSG}.proto
 )
+endforeach()
 
 foreach(X client server)
-add_executable(${X} client-server/${X}.cpp ${CMAKE_BINARY_DIR}/messages.pb.cc)
+add_executable(${X} client-server/${X}.cpp ${CMAKE_BINARY_DIR}/Sum.pb.cc)
 target_include_directories(${X} PUBLIC ${INCLUDES})
 target_link_libraries(${X} PUBLIC ${LIBS})
 endforeach()
 
 foreach(X publisher subscriber)
-add_executable(${X} publisher-subscriber/${X}.cpp ${CMAKE_BINARY_DIR}/messages.pb.cc)
+add_executable(${X} publisher-subscriber/${X}.cpp ${CMAKE_BINARY_DIR}/Temperature.pb.cc ${CMAKE_BINARY_DIR}/Status.pb.cc)
 target_include_directories(${X} PUBLIC ${INCLUDES})
 target_link_libraries(${X} PUBLIC ${LIBS})
 endforeach()

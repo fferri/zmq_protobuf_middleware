@@ -3,7 +3,7 @@
 #include <zmq.hpp>
 #include <string>
 #include <iostream>
-#include "messages.pb.h"
+#include "Sum.pb.h"
 #include "zhelpers.hpp"
 #include "protobufhelpers.hpp"
 
