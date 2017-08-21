@@ -26,7 +26,7 @@ set(LIBS
 )
 
 add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/messages.pc.cc ${CMAKE_BINARY_DIR}/messages.pb.h
+    OUTPUT ${CMAKE_BINARY_DIR}/messages.pb.cc ${CMAKE_BINARY_DIR}/messages.pb.h
     DEPENDS messages.proto
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMAND protoc -I=. --cpp_out=${CMAKE_BINARY_DIR} messages.proto
