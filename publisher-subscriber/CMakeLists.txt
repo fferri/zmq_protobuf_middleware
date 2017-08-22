@@ -14,3 +14,7 @@ add_executable(subscriber subscriber.cpp ${GENERATED_SOURCES})
 target_include_directories(subscriber PUBLIC ${INCLUDES})
 target_link_libraries(subscriber PUBLIC ${LIBS})
 
+add_executable(multi-subscriber multi-subscriber.cpp ${GENERATED_SOURCES})
+target_include_directories(multi-subscriber PUBLIC ${INCLUDES})
+target_link_libraries(multi-subscriber PUBLIC ${LIBS})
+
