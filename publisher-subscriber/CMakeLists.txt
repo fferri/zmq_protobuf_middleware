@@ -2,8 +2,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR 1)
 
 protobuf_generate_cpp(
     GENERATED_SOURCES GENERATED_HEADERS
-    ${CMAKE_SOURCE_DIR}/messages/Temperature.proto
-    ${CMAKE_SOURCE_DIR}/messages/Status.proto
+    Temperature.proto
+    Status.proto
 )
 
 add_executable(publisher publisher.cpp ${GENERATED_SOURCES})

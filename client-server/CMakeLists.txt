@@ -2,7 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR 1)
 
 protobuf_generate_cpp(
     GENERATED_SOURCES GENERATED_HEADERS
-    ${CMAKE_SOURCE_DIR}/messages/Sum.proto
+    Sum.proto
 )
 
 add_executable(client client.cpp ${GENERATED_SOURCES})
