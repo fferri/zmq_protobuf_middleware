@@ -108,7 +108,7 @@ message Status {
 }
 ```
 
-In order for filtering to work (note: in current ZMQ implementation, filtering works on the subscriber side), messages must have an envelope header (that is, they must be multipart, where the first part is a string with the "address"). The message envelope (containing the Protobuf's message name) will be added automatically by `s_publish(zmq::socket_t &socket, const T &msg)`, and will be extracted by `s_sub_recv(zmq::socket_t &socket, T &msg)`.
+In order for filtering to work, messages must have an envelope header (that is, they must be multipart, where the first part is a string with the "address"). The message envelope (containing the Protobuf's message name) will be added automatically by `s_publish(zmq::socket_t &socket, const T &msg)`, and will be extracted by `s_sub_recv(zmq::socket_t &socket, T &msg)`.
 
 subscriber.cpp:
 ```C++
