@@ -17,8 +17,6 @@ int main()
         MyMiddleware::Temperature temp;
         if(s_sub_recv(subscriber, temp))
             std::cout << "message: temperature: value=" << temp.value() << std::endl;
-        else
-            std::cout << "deserialization failed" << std::endl;
     }
     return 0;
 }
