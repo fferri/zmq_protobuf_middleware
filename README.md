@@ -1,7 +1,6 @@
-MyMiddleware
-============
-
 A proof of concept middleware using only the ZeroMQ library and Protobuf.
+
+My contribution is entirely in the <a href="protobufhelpers.hpp">protobufhelpers.hpp</a> file, which is a small extension of <a href="zhelpers.hpp">zhelpers.hpp</a>, a small utility library used in the ZMQ C++ examples.
 
 Examples
 ========
@@ -9,10 +8,30 @@ Examples
 Creating a client/server
 ========================
 
-For each request the server must answer with a reply, or the protocol will hang.
+We are going to use a REQ/REP socket pair, which means that for each request, the server must answer with a reply, or the protocol will hang.
+
+We want to implement a service for computing the sum of two integer numbers, so we define a `Sum.proto` file with the definitions for the request and the response message.
+
+Sum.proto:
+```Protocol Buffer
+syntax = "proto2";
+
+package MyMiddleware;
+
+message SumRequest {
+  required int32 a = 1;
+  required int32 b = 2;
+}
+
+message SumResponse {
+  required int32 s = 1;
+}
+```
+
+The server reads a `SumRequest` message, and sends out a `SumResponse` message.
 
 server.cpp:
-```
+```C++
     // connect the socket:
     zmq::context_t context(1);
     zmq::socket_t socket(context, ZMQ_REP);
@@ -34,8 +53,10 @@ server.cpp:
     }
 ```
 
+The client sends a `SumRequest` and reads a `SumResponse`.
+
 client.cpp:
-```
+```C++
     // connect the socket:
     zmq::context_t context(1);
     zmq::socket_t socket(context, ZMQ_REQ);
@@ -55,13 +76,42 @@ client.cpp:
     std::cout << "received s=" << resp.s() << std::endl;
 ```
 
-Creating a publish/subscriber
+Creating a publisher/subscriber
 =============================
 
-The message envelope with the Protobuf's message name will be added automatically by `s_publish(zmq::socket_t &socket, const T &msg)`, and will be extracted by `s_sub_recv(zmq::socket_t &socket, T &msg)`.
+Publisher/subscriber work similarly to previous example, but we set the `ZMQ_PUB` on the publisher endpoint, and `ZMQ_SUB` on the subscriber endpoint. The subscriber will also set up message filtering, with the `subscribe<T>(zmq::socket_t &socket)` call.
+
+For this example we want a publisher broadcasting several messages (Temperature, Status) to all the interested subscribers. A subscriber may be interested only in one type of message (Tempreature).
+
+So we define the two messages: Temperature.proto and Status.proto.
+
+Temperature.proto:
+```Protocol Buffer
+syntax = "proto2";
+
+package MyMiddleware;
+
+message Temperature {
+  required double value = 1;
+}
+```
+
+Status.proto:
+```Protocol Buffer
+syntax = "proto2";
+
+package MyMiddleware;
+
+message Status {
+  required int32 state = 1;
+  required int32 micro_state = 2;
+}
+```
+
+In order for filtering to work (note: in current ZMQ implementation, filtering works on the subscriber side), messages must have an envelope header (that is, they must be multipart, where the first part is a string with the "address"). The message envelope (containing the Protobuf's message name) will be added automatically by `s_publish(zmq::socket_t &socket, const T &msg)`, and will be extracted by `s_sub_recv(zmq::socket_t &socket, T &msg)`.
 
 subscriber.cpp:
-```
+```C++
     // connect the socket:
     zmq::context_t context(1);
     zmq::socket_t subscriber(context, ZMQ_SUB);
@@ -79,7 +129,7 @@ subscriber.cpp:
 ```
 
 publisher.cpp:
-```
+```C++
     // connect the socket:
     zmq::context_t context(1);
     zmq::socket_t publisher(context, ZMQ_PUB);
@@ -92,4 +142,6 @@ publisher.cpp:
     // publish the message:
     s_publish(publisher, temp);
 ```
+
+If we want to publish multiple types on the same socket, we need a more complex code (see multi-subscriber.cpp). My recommendation is to have one socket for each type (like ROS does).
 
